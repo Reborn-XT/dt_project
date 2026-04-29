@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Development Canvas - The Derma Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .canvas-container {
+            width: 100%;
+            max-width: 1400px;
+            background: #ffffff;
+            border: 2px solid #000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding: 1.5rem 2rem;
+        }
+
+        .header-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px 30px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 10px;
+        }
+
+        .meta-label {
+            font-weight: 700;
+        }
+
+        .meta-value {
+            border-bottom: 1px solid #000;
+            min-width: 150px;
+            display: inline-block;
+        }
+
+        /* Canvas Grid */
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-auto-rows: minmax(200px, auto);
+        }
+
+        .canvas-section {
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Remove borders for edges */
+        .no-border-right { border-right: none; }
+        .no-border-bottom { border-bottom: none; }
+        
+        /* Grid Spans */
+        .span-2 { grid-column: span 2; }
+
+        .section-header {
+            background-color: #e2e8f0;
+            border-bottom: 2px solid #000;
+            padding: 0.8rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            background-color: #fff;
+        }
+
+        /* Lists */
+        ul.bullet-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        ul.bullet-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 1rem;
+            font-size: 1.15rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        ul.bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #000;
+        }
+
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .tag.retain { background: #dcfce7; }
+        .tag.redesign { background: #fef3c7; }
+        .tag.reject { background: #fee2e2; }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .canvas-container {
+                box-shadow: none;
+                max-width: 100%;
+                border: 2px solid #000;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">Product Development Canvas</div>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Group ID:</span>
+                    <span class="meta-value">CV-2</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Sheet No:</span>
+                    <span class="meta-value">8</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Participants:</span>
+                    <span class="meta-value">Uday M. & Samarth T.</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Project Title:</span>
+                    <span class="meta-value">"The Derma Project"</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="canvas-grid">
+
+            <!-- Purpose / Goals -->
+            <div class="canvas-section">
+                <div class="section-header">🎯 Purpose / Goals</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>To simplify the dermatology appointment booking process</li>
+                        <li>To eliminate disorganized physical patient history files</li>
+                        <li>To help patients easily track their skin progress over time</li>
+                        <li>To reduce the financial burden of expensive branded medicines</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Target Audience -->
+            <div class="canvas-section">
+                <div class="section-header">👥 Target Audience</div>
+                <div class="section-content">
+                    <div class="tags-container">
+                        <div class="tag">Dermatology Patients on a budget</div>
+                        <div class="tag">Clinic Receptionists</div>
+                        <div class="tag">Consulting Dermatologists</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Features -->
+            <div class="canvas-section no-border-right">
+                <div class="section-header">✨ Product Features</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>Real-time digital appointment calendar</li>
+                        <li>Photo timeline for skin healing progress</li>
+                        <li>Medicine analyzer mapping brands to generic alternatives</li>
+                        <li>Push notifications for follow-ups and pill reminders</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Components & Requirements -->
+            <div class="canvas-section span-2">
+                <div class="section-header">⚙️ Components & Requirements</div>
+                <div class="section-content">
+                    <div class="tags-container">
+                        <div class="tag">Mobile Application Frontend (React Native/Flutter)</div>
+                        <div class="tag">Cloud Database for Patient Records</div>
+                        <div class="tag">Secure Authentication</div>
+                        <div class="tag">Generic Medicine API Database</div>
+                        <div class="tag">Camera API Integration</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Experience / Emotions -->
+            <div class="canvas-section no-border-right">
+                <div class="section-header">❤️ User Experience</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>Patients feel empowered and financially relieved</li>
+                        <li>Less anxiety about missing paper files</li>
+                        <li>Doctors experience smoother, faster consultations</li>
+                        <li>Trust is built through transparent medicine options</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Customer Validation -->
+            <div class="canvas-section span-2 no-border-bottom">
+                <div class="section-header">📈 Customer Validation & Impact</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>Patients report a ~40% reduction in monthly medicine costs</li>
+                        <li>Clinic sees a 30% reduction in missed or confused appointments</li>
+                        <li>Positive response from doctors regarding file retrieval speed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Iteration (Retain/Redesign/Reject) -->
+            <div class="canvas-section no-border-right no-border-bottom">
+                <div class="section-header">🔄 Iteration Strategy</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li><span class="tag retain" style="display:inline-block; margin-bottom:5px;">Retain</span> Generic medicine finder & photo timeline</li>
+                        <li><span class="tag redesign" style="display:inline-block; margin-bottom:5px;">Redesign</span> Booking UI for older demographic accessibility</li>
+                        <li><span class="tag reject" style="display:inline-block; margin-bottom:5px;">Reject</span> Overcomplicated doctor-patient chat feature (focus on core utility)</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

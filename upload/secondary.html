@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dermatology Clinic: Observation Research</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary-color: #0ea5e9;
+            --secondary-color: #38bdf8;
+            --bg-color: #082f49;
+            --text-main: #f0f9ff;
+            --text-muted: #bae6fd;
+            --card-bg: rgba(12, 74, 110, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at top left, #0c4a6e, #082f49);
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1280px;
+            max-height: 720px;
+            position: relative;
+            background: rgba(12, 74, 110, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: scale(0.95);
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #38bdf8, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Layouts */
+        .slide-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .number-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary-color), #7dd3fc);
+            width: 0%;
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        .slide-counter {
+            position: absolute;
+            bottom: 45px;
+            left: 40px;
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        /* Specific slide adjustments */
+        .title-slide {
+            text-align: center;
+            align-items: center;
+        }
+        
+        .title-slide h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .title-slide .subtitle {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .team-info {
+            background: var(--card-bg);
+            padding: 2rem 4rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-info p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <div class="progress-bar" id="progress"></div>
+    <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">9</span></div>
+    
+    <div class="controls">
+        <button class="btn" id="prevBtn" onclick="prevSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="btn" id="nextBtn" onclick="nextSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active title-slide">
+        <div class="slide-content">
+            <h2 style="color: var(--text-muted); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px;">Design Thinking</h2>
+            <h1>The Derma Project</h1>
+            <div class="subtitle">Dermatology Clinic Observation</div>
+            
+            <div class="team-info">
+                <h3 style="margin-bottom: 1.5rem; color: var(--secondary-color);">Participants</h3>
+                <div style="text-align: left; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <p>• Uday Madankar (PRN: 202501030039)</p>
+                    <p>• Samarth Thonge (PRN: 202501030027)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Observation System -->
+    <div class="slide">
+        <h2>OBSERVATION</h2>
+        <div class="slide-content">
+            <h3 style="font-size: 2rem; margin-bottom: 2rem;">Registration & Appointment System</h3>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="number-badge">1</div>
+                    <h3>Manual Entry</h3>
+                    <p>Appointments are booked via call or walk-ins. Staff handwrites phone numbers, dates, and names in a physical register.</p>
+                </div>
+                <div class="card">
+                    <div class="number-badge">2</div>
+                    <h3>Data Disorganization</h3>
+                    <p>The register lacks proper organization. Missing dates and unclear starting points lead to confusion and potential data loss.</p>
+                </div>
+                <div class="card">
+                    <div class="number-badge">3</div>
+                    <h3>Helpful Staff</h3>
+                    <p>Two staff members successfully manage patient flow at the counter despite the disorganized manual process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Consultation Process -->
+    <div class="slide">
+        <h2>THE PROCESS</h2>
+        <div class="slide-content">
+            <div class="grid-3">
+                <div class="card" style="border-top: 4px solid #38bdf8;">
+                    <h3>Accessible Fee</h3>
+                    <p>The appointment fee is highly accessible at just ₹200 for a consultation with the female dermatologist.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid #818cf8;">
+                    <h3>Patient History</h3>
+                    <p>Patients are required to maintain a physical file containing their previous visits, prescribed medicines, and doctor remarks.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid #34d399;">
+                    <h3>Visual Tracking</h3>
+                    <p>Patients must take images of their skin issues at every visit to actively observe their progress until treatment is over.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Treatment Timeline -->
+    <div class="slide">
+        <h2>CONSULTATION TIMELINE</h2>
+        <div class="slide-content">
+            <h3 style="margin-bottom: 2rem;">Time and Recovery Expectations</h3>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card" style="display: flex; gap: 2rem; align-items: center;">
+                    <div class="number-badge" style="width: 60px; height: 60px; font-size: 2rem;">⏳</div>
+                    <div>
+                        <h3>Fast-Paced Visits</h3>
+                        <p style="margin: 0;">Each visit takes an average of 10 minutes, with only a 1-minute gap between consecutive patients.</p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; gap: 2rem; align-items: center;">
+                    <div class="number-badge" style="width: 60px; height: 60px; font-size: 2rem;">📅</div>
+                    <div>
+                        <h3>Monthly Prescriptions</h3>
+                        <p style="margin: 0;">Patients are typically provided instructions to take medicines and apply creams for an entire month.</p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; gap: 2rem; align-items: center;">
+                    <div class="number-badge" style="width: 60px; height: 60px; font-size: 2rem;">✨</div>
+                    <div>
+                        <h3>Recovery Speed</h3>
+                        <p style="margin: 0;">Results are usually visible within 2 weeks. In certain cases, full recovery is possible within just 3 visits.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Medication Dynamics -->
+    <div class="slide">
+        <h2>MEDICATION DYNAMICS</h2>
+        <div class="slide-content">
+            <h3 style="margin-bottom: 2rem;">Prescriptions & Costs</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #60a5fa;">01. Dispensing Methods</h3>
+                    <p>Medicines are split: doctors directly provide some creams/liquids, while patients buy tablets, serums, gels, and facewashes outside.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #a78bfa;">02. Brand Tie-ups</h3>
+                    <p>Doctors often have tie-ups with big companies, prescribing specific branded medicines that are only available at a single designated shop.</p>
+                </div>
+                <div class="card" style="grid-column: span 2;">
+                    <h3 style="color: #f87171;">03. Financial Burden</h3>
+                    <p>These branded medicines are extremely expensive, often costing upwards of ₹2000 per month, making it unaffordable for many Indian customers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: The Generic Gap -->
+    <div class="slide">
+        <h2>THE GENERIC GAP</h2>
+        <div class="slide-content">
+            <h3 style="margin-bottom: 1.5rem;">Why Patients Overspend</h3>
+            <div class="grid-2" style="gap: 1rem;">
+                <div class="card" style="padding: 1.5rem;">
+                    <h3>Alternative Options</h3>
+                    <p style="font-size: 1.1rem; margin: 0;">Generic medicines exist at a much lower price point, but they are incredibly hard to find without guidance.</p>
+                </div>
+                <div class="card" style="padding: 1.5rem;">
+                    <h3>Lack of Awareness</h3>
+                    <p style="font-size: 1.1rem; margin: 0;">Patients only know brand names, not active components, making them fearful of side effects from alternatives.</p>
+                </div>
+                <div class="card" style="padding: 1.5rem; grid-column: span 2;">
+                    <h3>Online Discrepancies</h3>
+                    <p style="font-size: 1.1rem; margin: 0;">Even the prescribed branded medicines are sometimes cheaper online, but patients are not aware of this and continue to buy from the tied-up shop.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Clinic Details -->
+    <div class="slide">
+        <h2>CLINIC PROFILE</h2>
+        <div class="slide-content">
+            <h3 style="margin-bottom: 2rem;">Logistics & Operations</h3>
+            <div class="grid-2">
+                <div class="card" style="display: flex; gap: 1.5rem;">
+                    <div class="number-badge">🕒</div>
+                    <div>
+                        <h3>Operating Hours</h3>
+                        <p>10:00 AM to 12:00 PM<br>2:00 PM to 7:00 PM<br><em>Sunday Closed</em></p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; gap: 1.5rem;">
+                    <div class="number-badge">📍</div>
+                    <div>
+                        <h3>Location</h3>
+                        <p>Located perfectly in the middle of the city, making it highly accessible for incoming patients.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Affinity Diagram -->
+    <div class="slide">
+        <h2>AFFINITY DIAGRAM</h2>
+        <div class="slide-content">
+            <h3 style="margin-bottom: 2rem; text-align: center;">Categorizing Clinic Observations</h3>
+            <div style="display: flex; justify-content: center; width: 100%; height: 400px;">
+                <svg width="100%" height="100%" viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="drop-shadow" x="-10%" y="-10%" width="130%" height="130%">
+                            <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.3" />
+                        </filter>
+                    </defs>
+                    
+                    <!-- Lines / Web Connections -->
+                    <!-- Center to Categories -->
+                    <line x1="500" y1="200" x2="300" y2="100" stroke="#38bdf8" stroke-width="3" />
+                    <line x1="500" y1="200" x2="700" y2="100" stroke="#34d399" stroke-width="3" />
+                    <line x1="500" y1="200" x2="500" y2="300" stroke="#f87171" stroke-width="3" />
+                    
+                    <!-- Operations to Children -->
+                    <line x1="300" y1="100" x2="120" y2="50" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="300" y1="100" x2="100" y2="130" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="300" y1="100" x2="180" y2="220" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 5" />
+
+                    <!-- Patient to Children -->
+                    <line x1="700" y1="100" x2="880" y2="50" stroke="#34d399" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="700" y1="100" x2="900" y2="130" stroke="#34d399" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="700" y1="100" x2="820" y2="220" stroke="#34d399" stroke-width="2" stroke-dasharray="5 5" />
+
+                    <!-- Medication to Children -->
+                    <line x1="500" y1="300" x2="300" y2="350" stroke="#f87171" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="500" y1="300" x2="500" y2="380" stroke="#f87171" stroke-width="2" stroke-dasharray="5 5" />
+                    <line x1="500" y1="300" x2="700" y2="350" stroke="#f87171" stroke-width="2" stroke-dasharray="5 5" />
+
+                    <!-- Central Node -->
+                    <circle cx="500" cy="200" r="50" fill="#0ea5e9" filter="url(#drop-shadow)"/>
+                    <text x="500" y="195" fill="white" font-family="Inter" font-size="16" font-weight="bold" text-anchor="middle">Clinic</text>
+                    <text x="500" y="215" fill="white" font-family="Inter" font-size="16" font-weight="bold" text-anchor="middle">Obs.</text>
+
+                    <!-- Category Nodes -->
+                    <!-- Operations -->
+                    <rect x="220" y="75" width="160" height="50" rx="25" fill="#0c4a6e" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="300" y="105" fill="#38bdf8" font-family="Inter" font-size="16" font-weight="bold" text-anchor="middle">Operations</text>
+
+                    <!-- Patient -->
+                    <rect x="620" y="75" width="160" height="50" rx="25" fill="#0c4a6e" stroke="#34d399" stroke-width="2"/>
+                    <text x="700" y="105" fill="#34d399" font-family="Inter" font-size="16" font-weight="bold" text-anchor="middle">Patient Journey</text>
+
+                    <!-- Medication -->
+                    <rect x="420" y="275" width="160" height="50" rx="25" fill="#0c4a6e" stroke="#f87171" stroke-width="2"/>
+                    <text x="500" y="305" fill="#f87171" font-family="Inter" font-size="16" font-weight="bold" text-anchor="middle">Medication</text>
+
+                    <!-- Child Nodes (Sticky Note style but smaller for web) -->
+                    <!-- Operations Children -->
+                    <g transform="translate(40, 30)">
+                        <rect width="160" height="40" rx="8" fill="#fef08a" filter="url(#drop-shadow)"/>
+                        <text x="120" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Manual Registration</text>
+                    </g>
+                    <g transform="translate(20, 110)">
+                        <rect width="160" height="40" rx="8" fill="#fef08a" filter="url(#drop-shadow)"/>
+                        <text x="100" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Data Disorganization</text>
+                    </g>
+                    <g transform="translate(100, 200)">
+                        <rect width="160" height="40" rx="8" fill="#fef08a" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Staff Reliance</text>
+                    </g>
+
+                    <!-- Patient Children -->
+                    <g transform="translate(800, 30)">
+                        <rect width="160" height="40" rx="8" fill="#a7f3d0" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Visual Tracking</text>
+                    </g>
+                    <g transform="translate(820, 110)">
+                        <rect width="160" height="40" rx="8" fill="#a7f3d0" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Fast Consultations</text>
+                    </g>
+                    <g transform="translate(740, 200)">
+                        <rect width="160" height="40" rx="8" fill="#a7f3d0" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">History File Required</text>
+                    </g>
+
+                    <!-- Medication Children -->
+                    <g transform="translate(220, 330)">
+                        <rect width="160" height="40" rx="8" fill="#fecaca" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">High Prescript. Cost</text>
+                    </g>
+                    <g transform="translate(420, 360)">
+                        <rect width="160" height="40" rx="8" fill="#fecaca" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Brand Tie-ups</text>
+                    </g>
+                    <g transform="translate(620, 330)">
+                        <rect width="160" height="40" rx="8" fill="#fecaca" filter="url(#drop-shadow)"/>
+                        <text x="80" y="25" fill="#333" font-family="Inter" font-size="12" font-weight="bold" text-anchor="middle">Generic Unawareness</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Conclusion -->
+    <div class="slide">
+        <h2>Conclusion: Identify the Gaps</h2>
+        <div class="slide-content" style="align-items: center; text-align: center;">
+            <div style="max-width: 800px;">
+                <h3 style="font-size: 2rem; margin-bottom: 2rem; line-height: 1.4; color: var(--secondary-color);">
+                    "While clinical care is efficient, data management and patient education are severely lacking."
+                </h3>
+                
+                <div class="card" style="background: linear-gradient(145deg, rgba(12,74,110,0.9), rgba(8,47,73,0.9)); margin-bottom: 2rem;">
+                    <p style="font-size: 1.3rem; color: white;"><strong>Gap 1:</strong> Manual, disorganized registration risks data loss.</p>
+                    <p style="font-size: 1.3rem; color: white;"><strong>Gap 2:</strong> Expensive tied-up prescriptions create a financial burden.</p>
+                    <p style="font-size: 1.3rem; color: white;"><strong>Gap 3:</strong> Lack of awareness regarding cheaper generic alternatives.</p>
+                </div>
+                
+                <h3 style="font-size: 1.8rem;">Our Goal: Digitization & Education.</h3>
+                <p style="font-size: 1.3rem; color: #7dd3fc;">Creating a smarter, more affordable ecosystem for dermatology patients.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progress = document.getElementById('progress');
+    const currentSlideEl = document.getElementById('currentSlide');
+
+    function updateSlides() {
+        slides.forEach((slide, index) => {
+            if (index === currentSlideIndex) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+
+        // Update buttons
+        prevBtn.disabled = currentSlideIndex === 0;
+        nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+
+        // Update counter and progress
+        currentSlideEl.innerText = currentSlideIndex + 1;
+        progress.style.width = ((currentSlideIndex + 1) / totalSlides) * 100 + '%';
+    }
+
+    function nextSlide() {
+        if (currentSlideIndex < totalSlides - 1) {
+            currentSlideIndex++;
+            updateSlides();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlideIndex > 0) {
+            currentSlideIndex--;
+            updateSlides();
+        }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+
+    // Initialize
+    updateSlides();
+</script>
+
+</body>
+</html>

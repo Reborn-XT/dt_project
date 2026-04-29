@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideation Canvas - The Derma Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .canvas-container {
+            width: 100%;
+            max-width: 1400px;
+            background: #ffffff;
+            border: 2px solid #000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding: 1.5rem 2rem;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px 30px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 10px;
+        }
+
+        .meta-label {
+            font-weight: 700;
+        }
+
+        .meta-value {
+            border-bottom: 1px solid #000;
+            min-width: 150px;
+            display: inline-block;
+        }
+
+        /* Canvas Grid */
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1.5fr;
+            min-height: 600px;
+        }
+
+        .canvas-section {
+            border-right: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-section:last-child {
+            border-right: none;
+        }
+
+        .section-header {
+            background-color: #e2e8f0;
+            border-bottom: 2px solid #000;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .section-content {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        /* Target Audience styling */
+        .audience-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            border: 2px solid #000;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        /* Situation & Solution Lists */
+        ul.bullet-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        ul.bullet-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        ul.bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #000;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .canvas-container {
+                box-shadow: none;
+                max-width: 100%;
+                border: 2px solid #000;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">Ideation Canvas</div>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Group ID:</span>
+                    <span class="meta-value">CV-2</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Sheet No:</span>
+                    <span class="meta-value">7</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Participants:</span>
+                    <span class="meta-value">Uday M. & Samarth T.</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Project Title:</span>
+                    <span class="meta-value">"The Derma Project"</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="canvas-grid">
+
+            <!-- Target Audience -->
+            <div class="canvas-section">
+                <div class="section-header">Target Audience</div>
+                <div class="section-content">
+                    <div class="audience-tags">
+                        <div class="tag">Dermatology Patients</div>
+                        <div class="tag">Clinic Receptionists</div>
+                        <div class="tag">Consulting Dermatologists</div>
+                        <div class="tag">Local Pharmacists</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Situation -->
+            <div class="canvas-section">
+                <div class="section-header">Situation</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>Booking an appointment from home with high wait times</li>
+                        <li>Waiting at the crowded clinic reception area</li>
+                        <li>Doctor reviewing past patient history from disorganized physical files</li>
+                        <li>Patient trying to track their skin healing progress over weeks</li>
+                        <li>Patient buying prescribed branded medicines at a tied-up pharmacy</li>
+                        <li>Patient feeling financial strain and looking for cheaper generic medicine alternatives</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Solution -->
+            <div class="canvas-section">
+                <div class="section-header">Solution / Features</div>
+                <div class="section-content">
+                    <ul class="bullet-list">
+                        <li>Digital appointment booking calendar (Smart Booking)</li>
+                        <li>Cloud-based patient history database for easy access</li>
+                        <li>Built-in skin condition tracker with photo timeline overlays</li>
+                        <li>Database mapping expensive brand prescriptions to cheap generic options</li>
+                        <li>Automated follow-up and medicine schedule notifications</li>
+                        <li>Accessible mobile-first interface designed for all age groups</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DermaMatch AI — Find Generic Skincare Equivalents</title>
+  <meta name="description"
+    content="Upload a derma product image or describe it. DermaMatch AI finds cheaper Indian generic equivalents using AI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="canvas">
+
+    <!-- Input Section -->
+    <section id="interface-input" class="module active">
+      <header class="clean-header">
+        <div class="header-meta">
+          <span>DermaMatch AI</span>
+          <span>v2.0 · Educational</span>
+        </div>
+        <h1 class="app-title-new">DermaMatch AI</h1>
+        <p class="subtitle-new">Identify <span class="italic">generic equivalents</span>. Analyze formulation &amp;
+          find smarter savings.</p>
+      </header>
+
+      <div class="clean-tabs">
+        <button class="clean-tab active" id="tab-image" onclick="setMode('image')">📷 Visual Specimen</button>
+        <button class="clean-tab" id="tab-text" onclick="setMode('text')">✍️ Text Query</button>
+      </div>
+
+      <!-- Image Upload Zone -->
+      <div id="zone-image">
+        <div class="drop-target-new" id="drop-target"
+          onclick="if(!document.getElementById('upload-copy-layer').classList.contains('hidden')) document.getElementById('media-input').click()">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+
+          <div id="upload-copy-layer" class="upload-copy-new">
+            <div class="camera-icon">📷</div>
+            <div class="upload-headline">Drop Product Image Here</div>
+            <div class="upload-sub">or click to browse from your device</div>
+            <button class="upload-mini-btn"
+              onclick="event.stopPropagation(); document.getElementById('media-input').click()">
+              ↑ Choose Photo
+            </button>
+            <input type="file" id="media-input" accept=".png,.jpg,.jpeg,.webp" style="display:none;" />
+          </div>
+
+          <div id="media-preview-container" class="preview-container hidden">
+            <img id="media-preview" src="" alt="Specimen Preview">
+            <div class="preview-meta">
+              <span id="media-filename" class="mono-label">filename.jpg</span>
+              <button class="btn-remove" onclick="clearMedia(); event.stopPropagation();">✕ Remove</button>
+            </div>
+          </div>
+
+          <div class="support-text">Supports · JPG · PNG · WEBP · HEIC</div>
+        </div>
+      </div>
+
+      <!-- Text Query Zone -->
+      <div id="zone-text" class="hidden">
+        <textarea id="text-query" class="editorial-textarea"
+          placeholder="Enter clinical description, brand name, or active ingredients (e.g. 'Adapalene 0.1% gel' or 'Differin cream')..."
+          oninput="validateInput()"></textarea>
+      </div>
+
+      <button id="btn-execute" class="btn-primary-new disabled" onclick="executeProtocol()">Initiate Analysis</button>
+
+      <div class="footer-note" style="margin-top:28px; padding-top:14px;">
+        <p>For educational &amp; demonstration purposes only · Not professional medical advice</p>
+      </div>
+    </section>
+
+    <!-- Processing -->
+    <section id="interface-processing" class="module hidden">
+      <div style="text-align:center; padding: 20px 0 10px;">
+        <div class="matrix-title" style="margin-bottom: 6px;">Analyzing Specimen</div>
+        <div style="font-family:var(--font-sans); font-size:0.85rem; color:var(--ink-medium);">Please wait while we
+          query pharmacy databases...</div>
+      </div>
+      <div class="loader-retro"></div>
+      <div class="processing-box">
+        <div
+          style="font-family:var(--font-mono); font-size:0.65rem; color:rgba(255,255,255,0.4); letter-spacing:0.1em; margin-bottom:12px; text-transform:uppercase;">
+          ◉ Live System Log
+        </div>
+        <div class="log-output" id="log-output"></div>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <section id="interface-error" class="hidden error-module">
+      <div style="font-size:2rem; margin-bottom:12px;">⚠️</div>
+      <h2
+        style="font-family:var(--font-serif); color:var(--accent-red); margin-bottom:10px; font-style:italic; font-size:1.6rem;">
+        Analysis Interrupted</h2>
+      <p id="error-message" class="mono-label"
+        style="text-transform:none; margin-bottom:24px; letter-spacing:0.05em; font-weight:400; color:var(--ink-dark); font-size:0.8rem; line-height:1.6;">
+        Specimen issue.</p>
+      <button class="btn-primary-new" onclick="resetProtocol()">← Try Again</button>
+    </section>
+
+    <!-- Output Section -->
+    <section id="interface-output" class="module hidden">
+      <header class="matrix-header-new">
+        <button class="btn-icon-clear" onclick="resetProtocol()" title="Start Over">←</button>
+        <h2 class="matrix-title">Derived Matrix</h2>
+        <button class="btn-icon-clear" title="Share">🔗</button>
+      </header>
+
+      <div class="source-header">
+        <span class="source-label">Source Specimen</span>
+        <span class="markup-pill">⬆ High Markup</span>
+      </div>
+
+      <div class="refined-card">
+        <div class="og-title-row">
+          <div class="og-title-large" id="out-original-name"></div>
+          <div>
+            <div class="og-price-large" id="out-original-price"></div>
+            <span class="msrp-label">Retail MSRP</span>
+          </div>
+        </div>
+        <div class="ref-id" id="out-ref-id">REF_ID: #L77-PRO-82 · Extracted <span id="current-date"></span></div>
+        <div class="pill-row" id="out-original-tags">
+          <!-- Active ingredient pills -->
+        </div>
+      </div>
+
+      <div class="results-divider">
+        <span class="divider-text" id="equivalents-count-label"></span>
+      </div>
+
+      <div id="matrix-grid">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="footer-note">
+        <p>Data verified against clinical records rev. 4.02<br>Extraction date: <span id="current-date-footer"></span> —
+          Protocol: 002-DERMA<br>Educational project · Not medical advice</p>
+      </div>
+    </section>
+
+    <!-- Secrets -->
+    <div style="position:fixed; bottom:0; padding:10px; opacity:0; pointer-events:none;">
+      <input type="password" id="api-vault" placeholder="Authorization Token" autocomplete="off" />
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>

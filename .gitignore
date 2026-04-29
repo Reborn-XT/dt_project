@@ -1,0 +1,6 @@
+development_files/
+__pycache__/
+*.log
+.env
+static/uploads/*
+!static/uploads/.gitkeep

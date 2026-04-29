@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dermatology Clinic: Primary Research</title>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary-color: #0284c7;
+            --secondary-color: #38bdf8;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at top left, #e0f2fe, #f1f5f9);
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1280px;
+            max-height: 720px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: scale(0.95);
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #0284c7, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .options li {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            padding: 10px 15px;
+            background: rgba(2, 132, 199, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Layouts */
+        .slide-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary-color), #38bdf8);
+            width: 0%;
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        .slide-counter {
+            position: absolute;
+            bottom: 45px;
+            left: 40px;
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        .title-slide {
+            text-align: center;
+            align-items: center;
+        }
+        
+        .title-slide h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .title-slide .subtitle {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .team-info {
+            background: var(--card-bg);
+            padding: 2rem 4rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .inference-box {
+            background: rgba(248, 113, 113, 0.1); 
+            padding: 1.5rem; 
+            border-left: 4px solid #ef4444; 
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .inference-box.positive {
+            background: rgba(52, 211, 153, 0.1);
+            border-left-color: #10b981;
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <div class="progress-bar" id="progress"></div>
+    <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">8</span></div>
+    
+    <div class="controls">
+        <button class="btn" id="prevBtn" onclick="prevSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="btn" id="nextBtn" onclick="nextSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active title-slide">
+        <div class="slide-content">
+            <h2 style="color: var(--text-muted); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px;">Design Thinking</h2>
+            <h1>The Derma Project</h1>
+            <div class="subtitle">Primary Research</div>
+            
+            <div class="team-info">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Participants</h3>
+                <div style="text-align: left; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-main);">
+                    <p>• Uday Madankar (PRN: 202501030039)</p>
+                    <p>• Samarth Thonge (PRN: 202501030027)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Questionnaire Part 1 -->
+    <div class="slide">
+        <h2>QUESTIONNAIRE</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="question">1. How did you book your appointment today?</div>
+                    <ul class="options">
+                        <li>[A] Walk-in</li>
+                        <li>[B] Phone Call</li>
+                        <li>[C] Other</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="question">2. How long have you been visiting this clinic?</div>
+                    <ul class="options">
+                        <li>[A] First time</li>
+                        <li>[B] Less than a month</li>
+                        <li>[C] 1-3 months</li>
+                        <li>[D] More than 3 months</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Questionnaire Part 2 -->
+    <div class="slide">
+        <h2>QUESTIONNAIRE</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="question">3. Have you ever experienced confusion regarding your appointment date or time due to the manual register?</div>
+                    <ul class="options">
+                        <li>[A] Yes, frequently</li>
+                        <li>[B] Sometimes</li>
+                        <li>[C] Rarely</li>
+                        <li>[D] Never</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="question">4. How convenient is it for you to carry and maintain the physical history file and progress photos for every visit?</div>
+                    <ul class="options">
+                        <li>[A] Very convenient</li>
+                        <li>[B] Manageable</li>
+                        <li>[C] Inconvenient</li>
+                        <li>[D] Very inconvenient</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Questionnaire Part 3 -->
+    <div class="slide">
+        <h2>QUESTIONNAIRE</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="question">5. On average, how much do you spend monthly on the prescribed branded medicines?</div>
+                    <ul class="options">
+                        <li>[A] Under ₹500</li>
+                        <li>[B] ₹500 - ₹1000</li>
+                        <li>[C] ₹1000 - ₹2000</li>
+                        <li>[D] Over ₹2000</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="question">6. Are you aware that cheaper generic alternatives might exist for your prescribed medicines?</div>
+                    <ul class="options">
+                        <li>[A] Yes, and I use them</li>
+                        <li>[B] Yes, but I don't know how to find them</li>
+                        <li>[C] No, I am not aware</li>
+                        <li>[D] No, I only trust the branded ones</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Questionnaire Part 4 -->
+    <div class="slide">
+        <h2>QUESTIONNAIRE</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="question">7. Would you be comfortable using a digital app to book appointments and track your treatment progress?</div>
+                    <ul class="options">
+                        <li>[A] Yes, definitely</li>
+                        <li>[B] Maybe, if it's easy to use</li>
+                        <li>[C] No, I prefer the current system</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="question">8. Would a feature that suggests affordable generic alternatives for your prescriptions be helpful?</div>
+                    <ul class="options">
+                        <li>[A] Very helpful</li>
+                        <li>[B] Somewhat helpful</li>
+                        <li>[C] Not necessary</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Analysis 1 (with Graph) -->
+    <div class="slide">
+        <h2>CURRENT STATUS OF OPERATIONS</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary-color);">Booking Experience</h3>
+                    <ul style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; margin-left: 1.5rem; margin-bottom: 1rem; margin-top: 1rem;">
+                        <li>Approximately <strong>68% of patients</strong> reported confusion with their appointment scheduling.</li>
+                        <li>The reliance on a handwritten register leads to missing dates.</li>
+                    </ul>
+                    <div class="inference-box">
+                        <strong style="color: #ef4444; font-size: 1.1rem;">Inference:</strong><br>
+                        <span style="color: var(--text-main); font-size: 1.1rem;">The current manual registration system is outdated and prone to errors.</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="chart-container">
+                        <canvas id="chartConfusion"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Analysis 2 (with Graph) -->
+    <div class="slide">
+        <h2>THE IMPACT ON PATIENTS</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="chart-container">
+                        <canvas id="chartCost"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary-color);">Medication Costs</h3>
+                    <ul style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; margin-left: 1.5rem; margin-bottom: 1rem; margin-top: 1rem;">
+                        <li><strong>75% of patients</strong> spend over ₹1500 monthly on branded medicines.</li>
+                        <li><strong>75% of patients</strong> are completely unaware of generic alternatives.</li>
+                    </ul>
+                    <div class="inference-box">
+                        <strong style="color: #ef4444; font-size: 1.1rem;">Inference:</strong><br>
+                        <span style="color: var(--text-main); font-size: 1.1rem;">High costs create a huge financial burden, exacerbated by lack of education.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Analysis 3 (with Graph) -->
+    <div class="slide">
+        <h2>VALIDATION OF SOLUTION</h2>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary-color);">Acceptance of Digitization</h3>
+                    <ul style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; margin-left: 1.5rem; margin-bottom: 1rem; margin-top: 1rem;">
+                        <li><strong>83% of respondents</strong> expressed strong interest in a digital app.</li>
+                        <li><strong>90% stated</strong> that a generic medicine suggestion tool would be helpful.</li>
+                    </ul>
+                    <div class="inference-box positive">
+                        <strong style="color: #10b981; font-size: 1.1rem;">Conclusion:</strong><br>
+                        <span style="color: var(--text-main); font-size: 1.1rem;">The survey strongly validates the need for a digital, educational ecosystem.</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="chart-container">
+                        <canvas id="chartAcceptance"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Slider Logic
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progress = document.getElementById('progress');
+    const currentSlideEl = document.getElementById('currentSlide');
+
+    function updateSlides() {
+        slides.forEach((slide, index) => {
+            if (index === currentSlideIndex) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+
+        // Update buttons
+        prevBtn.disabled = currentSlideIndex === 0;
+        nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+
+        // Update counter and progress
+        currentSlideEl.innerText = currentSlideIndex + 1;
+        progress.style.width = ((currentSlideIndex + 1) / totalSlides) * 100 + '%';
+    }
+
+    function nextSlide() {
+        if (currentSlideIndex < totalSlides - 1) {
+            currentSlideIndex++;
+            updateSlides();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlideIndex > 0) {
+            currentSlideIndex--;
+            updateSlides();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+
+    updateSlides();
+
+    // Chart.js Graphics Setup
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Chart 1: Confusion (Doughnut)
+        const ctx1 = document.getElementById('chartConfusion').getContext('2d');
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Frequent Confusion', 'Occasional', 'Rarely/Never'],
+                datasets: [{
+                    data: [42, 26, 32],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12 } } },
+                    title: { display: true, text: 'Appointment Confusion Level', font: { family: 'Inter', size: 16 } }
+                }
+            }
+        });
+
+        // Chart 2: Cost (Bar)
+        const ctx2 = document.getElementById('chartCost').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['< ₹500', '₹500-1000', '₹1000-1500', '> ₹1500'],
+                datasets: [{
+                    label: '% of Patients',
+                    data: [6, 8, 11, 75],
+                    backgroundColor: '#0284c7',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Monthly Medicine Spend', font: { family: 'Inter', size: 16 } }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // Chart 3: Acceptance (Pie)
+        const ctx3 = document.getElementById('chartAcceptance').getContext('2d');
+        new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: ['Strong Interest', 'Maybe', 'No Interest'],
+                datasets: [{
+                    data: [83, 12, 5],
+                    backgroundColor: ['#10b981', '#3b82f6', '#94a3b8'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12 } } },
+                    title: { display: true, text: 'App Adoption Interest', font: { family: 'Inter', size: 16 } }
+                }
+            }
+        });
+        
+    });
+</script>
+
+</body>
+</html>
